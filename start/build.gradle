@@ -1,0 +1,13 @@
+sourceCompatibility = 17
+targetCompatibility = 17
+
+// sourceSets.main.java.srcDirs = ["src/"]
+
+project.ext.mainClassName = "com.example.cleanarch.StartApplication"
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    ignoreExitValue = true
+}

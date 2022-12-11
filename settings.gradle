@@ -1,0 +1,2 @@
+rootProject.name = 'cleanarch'
+include 'start', 'entrypointapi', 'entrypointwebpage', 'entrypointworker', 'entrypointeventmanager', 'usecasebase', 'usecaseimpl', 'gatewaybase', 'gatewayapi', 'gatewaydatabase', 'gatewaymessagebroker', 'gatewaystorage', 'gatewayeventmanager', 'entity'

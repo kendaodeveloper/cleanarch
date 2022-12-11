@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include: >
+      gateway-api,
+      gateway-database
+application:
+  env: ${APPLICATION_ENV:DEVELOPMENT}
+  dns: ${APPLICATION_DNS:localhost:8080}
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:INFO}

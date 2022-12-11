@@ -1,0 +1,19 @@
+feign:
+  okhttp:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+    via-cep:
+      url: ${FEIGN_CLIENT_VIA_CEP_URL:https://viacep.com.br}
+    zip-code-base:
+      url: ${FEIGN_CLIENT_ZIP_CODE_BASE_URL:https://app.zipcodebase.com}
+spring:
+  redis:
+    enabled: ${SPRING_REDIS_ENABLED:true}
+    host: ${SPRING_REDIS_HOST:localhost}
+    port: ${SPRING_REDIS_PORT:6379}
+    product:
+      timeout: ${SPRING_REDIS_PRODUCT_TIMEOUT:1800000}
