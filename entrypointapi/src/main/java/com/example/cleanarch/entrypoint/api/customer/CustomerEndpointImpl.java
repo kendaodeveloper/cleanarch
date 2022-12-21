@@ -1,10 +1,9 @@
 package com.example.cleanarch.entrypoint.api.customer;
 
+import com.example.cleanarch.entrypoint.api.customer.mapper.CustomerEndpointMapper;
 import com.example.cleanarch.entrypoint.api.customer.request.WriteCustomerEndpointRequest;
 import com.example.cleanarch.entrypoint.api.customer.response.CustomerEndpointResponse;
 import com.example.cleanarch.usecase.base.customer.*;
-import com.example.cleanarch.usecase.base.customer.request.CustomerUseCaseRequest;
-import com.example.cleanarch.usecase.base.customer.response.CustomerUseCaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,7 +54,7 @@ public class CustomerEndpointImpl {
       @RequestParam(required = false, defaultValue = "10") @Parameter(name = "limit", description = "page size") @Min(1) Integer limit
   ) {
     return this.getCustomersByFilterUseCase.execute(id, name, cpf, email, birthDate, offset, limit)
-        .stream().map(this::mapUseCaseResponseToEndpointResponse).collect(Collectors.toList());
+        .stream().map(CustomerEndpointMapper::mapUseCaseToEndpoint).collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
@@ -74,7 +73,7 @@ public class CustomerEndpointImpl {
   public CustomerEndpointResponse getById(
       @PathVariable @Parameter(name = "id", description = "id") UUID id
   ) {
-    return this.mapUseCaseResponseToEndpointResponse(
+    return CustomerEndpointMapper.mapUseCaseToEndpoint(
         this.getCustomerByIdUseCase.execute(id)
     );
   }
@@ -92,9 +91,9 @@ public class CustomerEndpointImpl {
       }
   )
   public CustomerEndpointResponse post(@RequestBody @Valid WriteCustomerEndpointRequest request) {
-    return this.mapUseCaseResponseToEndpointResponse(
+    return CustomerEndpointMapper.mapUseCaseToEndpoint(
         this.createCustomerUseCase.execute(
-            this.mapEndpointRequestToUseCaseRequest(request)
+            CustomerEndpointMapper.mapEndpointToUseCase(request)
         )
     );
   }
@@ -116,10 +115,10 @@ public class CustomerEndpointImpl {
       @PathVariable @Parameter(name = "id", description = "id") UUID id,
       @RequestBody @Valid WriteCustomerEndpointRequest request
   ) {
-    return this.mapUseCaseResponseToEndpointResponse(
+    return CustomerEndpointMapper.mapUseCaseToEndpoint(
         this.updateCustomerUseCase.execute(
             id,
-            this.mapEndpointRequestToUseCaseRequest(request)
+            CustomerEndpointMapper.mapEndpointToUseCase(request)
         )
     );
   }
@@ -138,24 +137,5 @@ public class CustomerEndpointImpl {
   )
   public void delete(@PathVariable @Parameter(name = "id", description = "id") UUID id) {
     this.deleteCustomerByIdUseCase.execute(id);
-  }
-
-  private CustomerEndpointResponse mapUseCaseResponseToEndpointResponse(CustomerUseCaseResponse customerUseCase) {
-    return new CustomerEndpointResponse(
-        customerUseCase.getId(),
-        customerUseCase.getName(),
-        customerUseCase.getCpf(),
-        customerUseCase.getEmail(),
-        customerUseCase.getBirthDate()
-    );
-  }
-
-  private CustomerUseCaseRequest mapEndpointRequestToUseCaseRequest(WriteCustomerEndpointRequest customerEndpoint) {
-    return new CustomerUseCaseRequest(
-        customerEndpoint.getName(),
-        customerEndpoint.getCpf(),
-        customerEndpoint.getEmail(),
-        customerEndpoint.getBirthDate()
-    );
   }
 }

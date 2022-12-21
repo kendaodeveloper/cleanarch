@@ -1,10 +1,10 @@
 package com.example.cleanarch.entrypoint.api.address;
 
 import com.example.cleanarch.entrypoint.api.address.enumerable.AddressEndpointCountry;
+import com.example.cleanarch.entrypoint.api.address.mapper.AddressEndpointMapper;
 import com.example.cleanarch.entrypoint.api.address.response.AddressEndpointResponse;
 import com.example.cleanarch.usecase.base.address.GetAddressByPostalCodeUseCase;
 import com.example.cleanarch.usecase.base.address.enumerable.AddressUseCaseCountry;
-import com.example.cleanarch.usecase.base.address.response.AddressUseCaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,21 +40,8 @@ public class AddressEndpointImpl {
       @RequestParam @Parameter(name = "postalCode", description = "postal code") String postalCode,
       @RequestParam @Parameter(name = "country", description = "country") AddressEndpointCountry country
   ) {
-    return this.mapUseCaseResponseToEndpointResponse(
+    return AddressEndpointMapper.mapUseCaseToEndpoint(
         this.getAddressByPostalCodeUseCase.getAddressByPostalCode(postalCode, AddressUseCaseCountry.valueOf(country.toString()))
-    );
-  }
-
-  private AddressEndpointResponse mapUseCaseResponseToEndpointResponse(AddressUseCaseResponse addressUseCase) {
-    return new AddressEndpointResponse(
-        addressUseCase.getPostalCode(),
-        addressUseCase.getPublicPlace(),
-        addressUseCase.getNumber(),
-        addressUseCase.getNeighbourhood(),
-        addressUseCase.getComplement(),
-        addressUseCase.getCity(),
-        addressUseCase.getState(),
-        AddressEndpointCountry.valueOf(addressUseCase.getCountry().toString())
     );
   }
 }
